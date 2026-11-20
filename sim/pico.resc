@@ -1,0 +1,20 @@
+:name: ETOF Raspberry Pi Pico (RP2040)
+:description: RP2040 simülasyonu + proje firmware'i. Önce $rp2040 ve $firmware ayarlanmalı.
+
+# Varsayılanlar (scripts/*.ps1 bunları komut satırından geçirir)
+$rp2040?=@C:/Users/osman/tools/Renode_RP2040
+$machine_name?="etof_pico"
+
+path add $rp2040
+
+# RP2040 çevre birimleri kaynak koddan derlenir (ilk açılış ~30-60 sn sürebilir)
+include @cores/initialize_peripherals_source.resc
+machine LoadPlatformDescription @boards/raspberry_pico.repl
+sysbus LoadELF @bootroms/rp2040/b2.elf
+
+sysbus LoadELF $firmware
+sysbus.cpu0 VectorTableOffset 0x00000000
+sysbus.cpu1 VectorTableOffset 0x00000000
+
+# Zaman senkronizasyon adımı: küçük değer = daha doğru, daha yavaş
+emulation SetGlobalQuantum "0.0001"

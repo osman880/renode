@@ -1,0 +1,9 @@
+:name: ETOF headless run
+:description: Firmware'i GUI olmadan $run_time süre çalıştırır, UART çıktısını $uart_log dosyasına yazar.
+
+$run_time?="00:00:01"
+include $ORIGIN/pico.resc
+
+sysbus.uart0 CreateFileBackend $uart_log true
+emulation RunFor $run_time
+quit
